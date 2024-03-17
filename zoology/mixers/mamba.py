@@ -11,11 +11,14 @@ from zoology.mixers.mamba_ssm.triton.layernorm import RMSNorm, layer_norm_fn, rm
 try:
     from causal_conv1d import causal_conv1d_fn
 except:
-    assert 0, print(f"Need to install causal_conv1d: pip install causal_conv1d")
+    # assert 0, print(f"Need to install causal_conv1d: pip install causal_conv1d")
+    causal_conv1d_fn = None
 try:
     from zoology.mixers.mamba_ssm.selective_scan_interface import selective_scan_fn, mamba_inner_fn
 except:
-    assert 0, print(f"Need to install selective_scan_interface: pip install mamba_ssm")
+    # assert 0, print(f"Need to install selective_scan_interface: pip install mamba_ssm")
+    selective_scan_fn = None
+    mamba_inner_fn = None
 
 
 class Mamba(nn.Module):

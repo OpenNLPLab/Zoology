@@ -1,10 +1,13 @@
 from zoology.config import TrainConfig, ModelConfig, DataConfig, FunctionConfig, ModuleConfig
+import os
 
+cache_dir = os.getenv("cache_dir", "cache_dir")
 
 
 config = TrainConfig(
     data=DataConfig(
         # cache_dir="/path/to/cache/dir"  TODO: add this
+        cache_dir=cache_dir,
         vocab_size=256,
         input_seq_len=64,
         num_train_examples=10_000,

@@ -4,6 +4,9 @@ from zoology.config import TrainConfig, ModelConfig, DataConfig, FunctionConfig,
 
 from zoology.config import TrainConfig, ModelConfig, DataConfig, FunctionConfig, ModuleConfig
 
+import os
+
+cache_dir = os.getenv("cache_dir", "cache_dir")
 
 configs = []
 
@@ -12,6 +15,7 @@ for lr in np.logspace(-4, -2, 10):
    config = TrainConfig(
       data=DataConfig(
          # cache_dir="/path/to/cache/dir"  TODO: add a directory where data will be cached
+         cache_dir=cache_dir,
          vocab_size=256,
          input_seq_len=64,
          num_train_examples=10_000,

@@ -46,6 +46,7 @@ class Trainer:
         self.learning_rate = learning_rate
         self.weight_decay = weight_decay
         self.slice_keys = slice_keys
+        print(self.model)
 
     def train_epoch(self, epoch_idx: int):
         self.model.train()
@@ -59,24 +60,25 @@ class Trainer:
             inputs, targets = inputs.to(self.device), targets.to(self.device)
             self.optimizer.zero_grad()
 
-            # forward
-            logits = self.model(inputs)
+            with torch.cuda.amp.autocast(enabled=True, dtype=torch.bfloat16):
+                # forward
+                logits = self.model(inputs)
+ 
+                # collect auxiliary losses
+                auxiliary_loss = []
 
-            # collect auxiliary losses
-            auxiliary_loss = []
+                def get_auxiliary_loss(module):
+                    if hasattr(module, "get_auxiliary_loss"):
+                        auxiliary_loss.append(module.get_auxiliary_loss())
 
-            def get_auxiliary_loss(module):
-                if hasattr(module, "get_auxiliary_loss"):
-                    auxiliary_loss.append(module.get_auxiliary_loss())
+                self.model.apply(get_auxiliary_loss)
+                auxiliary_loss = sum(auxiliary_loss)
 
-            self.model.apply(get_auxiliary_loss)
-            auxiliary_loss = sum(auxiliary_loss)
-
-            # need to flatten batch and sequence dimensions
-            main_loss = self.loss_fn(
-                rearrange(logits, "... c -> (...) c"), targets.flatten()
-            )
-            loss = main_loss + auxiliary_loss
+                # need to flatten batch and sequence dimensions
+                main_loss = self.loss_fn(
+                    rearrange(logits, "... c -> (...) c"), targets.flatten()
+                )
+                loss = main_loss + auxiliary_loss
             loss.backward()
             self.optimizer.step()
 
