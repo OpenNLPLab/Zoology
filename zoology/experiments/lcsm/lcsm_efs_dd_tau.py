@@ -56,7 +56,7 @@ for input_seq_len, num_kv_pairs in [
                     kwargs={
                         "dropout": 0.1,
                         "num_heads": 1,
-                        "c_type": 0,
+                        "c_type": 1,
                         "e_type": 1,
                         "f_type": 1,
                         "s_type": 1,
@@ -90,7 +90,7 @@ for input_seq_len, num_kv_pairs in [
                         data=data,
                         learning_rate=lr,
                         max_epochs=64,
-                        run_id=f"{sequence_mixer}-c{kwargs['c_type']}-e{kwargs['e_type']}-f{kwargs['f_type']}-s{kwargs['s_type']}-fl{kwargs['f_learned']}-tau{kwargs['tau']}-ut{kwargs['use_tau']}-t{kwargs['t_type']}-seqlen{input_seq_len}-dmodel{d_model}-lr{lr}-kv{num_kv_pairs}",
+                        run_id=f"{sequence_mixer}-fix-c{kwargs['c_type']}-e{kwargs['e_type']}-f{kwargs['f_type']}-s{kwargs['s_type']}-fl{kwargs['f_learned']}-tau{kwargs['tau']}-ut{kwargs['use_tau']}-t{kwargs['t_type']}-seqlen{input_seq_len}-dmodel{d_model}-lr{lr}-kv{num_kv_pairs}",
                         logger=LoggerConfig(
                             project_name="lcsm",
                             entity="doraemonzzz"
