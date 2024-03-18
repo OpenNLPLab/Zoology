@@ -5,6 +5,7 @@ from typing import List, Union
 import pandas as pd
 
 import torch
+from torch.cuda.amp import GradScaler as GradScaler
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
@@ -50,6 +51,8 @@ class Trainer:
 
     def train_epoch(self, epoch_idx: int):
         self.model.train()
+        scaler = GradScaler()
+        
         iterator = tqdm(
             self.train_dataloader,
             total=len(self.train_dataloader),
@@ -60,7 +63,8 @@ class Trainer:
             inputs, targets = inputs.to(self.device), targets.to(self.device)
             self.optimizer.zero_grad()
 
-            with torch.cuda.amp.autocast(enabled=True, dtype=torch.bfloat16):
+            with torch.cuda.amp.autocast(enabled=True, dtype=torch.bfloat16): # has bug for now
+            # with torch.cuda.amp.autocast(enabled=False):
                 # forward
                 logits = self.model(inputs)
  
@@ -79,8 +83,12 @@ class Trainer:
                     rearrange(logits, "... c -> (...) c"), targets.flatten()
                 )
                 loss = main_loss + auxiliary_loss
-            loss.backward()
-            self.optimizer.step()
+            # loss.backward()
+            # self.optimizer.step()
+            
+            scaler.scale(loss).backward()
+            scaler.step(self.optimizer)
+            scaler.update()
 
             # logging and printing
             iterator.set_postfix({"loss": loss.item()})
@@ -147,7 +155,8 @@ class Trainer:
         self.model.to("cuda")
         self.loss_fn = nn.CrossEntropyLoss()
         self.optimizer = optim.AdamW(
-            self.model.parameters(),
+            # self.model.parameters(),
+            filter(lambda p: p.requires_grad, self.model.parameters()),
             lr=self.learning_rate,
             weight_decay=self.weight_decay,
         )

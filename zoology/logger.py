@@ -43,7 +43,7 @@ class WandbLogger:
                 "state_size": model.state_size(sequence_length=max_seq_len),
             }
         )
-        wandb.watch(model)
+        wandb.watch(model, log="parameters") # if not add this, may get some error
 
     def log(self, metrics: dict):
         if self.no_logger:

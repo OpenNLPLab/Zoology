@@ -76,7 +76,7 @@ class DataSegment:
             print(f"Loading data from on-disk cache at {cache_path}...") 
             # SE 09-12-23: there's some sporadic issue in torch load that gives
             # RuntimeError: PytorchStreamReader failed reading file data/2: file read failed
-            MAX_RETRIES = 10
+            MAX_RETRIES = 100
             for _ in range(MAX_RETRIES):
                 try:
                     data = cls(**torch.load(cache_path))
