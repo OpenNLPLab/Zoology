@@ -22,7 +22,7 @@ for input_seq_len, num_kv_pairs in [
     if input_seq_len == 1024:
         batch_size = 64
     elif input_seq_len == 512:
-        batch_size = 128
+        batch_size = 64
     elif input_seq_len == 256:
         batch_size = 256
     else:

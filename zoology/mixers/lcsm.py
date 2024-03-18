@@ -9,7 +9,7 @@ class Lcsm(nn.Module):
     def __init__(
         self,
         d_model=512,
-        num_heads=1,
+        expand_dim=128,
         bias=False,
         c_type=0,  # compute type, 1: linear layer 2: ssm
         e_type=0,
@@ -25,8 +25,6 @@ class Lcsm(nn.Module):
         super().__init__()
         
         embed_dim = d_model
-        expand_dim = d_model // num_heads
-        ssm_dim = expand_dim
         self.mixer = EOS(
             embed_dim=embed_dim,
             expand_dim=expand_dim,

@@ -22,7 +22,7 @@ for input_seq_len, num_kv_pairs in [
     if input_seq_len == 1024:
         batch_size = 64
     elif input_seq_len == 512:
-        batch_size = 128
+        batch_size = 64
     elif input_seq_len == 256:
         batch_size = 256
     else:
@@ -55,7 +55,7 @@ for input_seq_len, num_kv_pairs in [
                     name="zoology.mixers.lcsm.Lcsm",
                     kwargs={
                         "dropout": 0.1,
-                        "num_heads": 1,
+                        "expand_dim": 128,
                         "c_type": 1,
                         "e_type": 0,
                         "f_type": 1,
@@ -80,7 +80,7 @@ for input_seq_len, num_kv_pairs in [
 
                         model = ModelConfig(
                             d_model=d_model,
-                            n_layers=4 if sequence_mixer != "attention" else 2,
+                            n_layers=2,
                             block_type=block_type,
                             max_position_embeddings=input_seq_len if sequence_mixer == "attention" else 0,
                             vocab_size=VOCAB_SIZE,
@@ -93,7 +93,7 @@ for input_seq_len, num_kv_pairs in [
                             data=data,
                             learning_rate=lr,
                             max_epochs=64,
-                            run_id=f"{sequence_mixer}-fix-c{kwargs['c_type']}-e{kwargs['e_type']}-f{kwargs['f_type']}-s{kwargs['s_type']}-fl{kwargs['f_learned']}-tau{kwargs['tau']}-ut{kwargs['use_tau']}-t{kwargs['t_type']}-seqlen{input_seq_len}-dmodel{d_model}-lr{lr}-kv{num_kv_pairs}",
+                            run_id=f"{sequence_mixer}-c{kwargs['c_type']}-e{kwargs['e_type']}-f{kwargs['f_type']}-s{kwargs['s_type']}-fl{kwargs['f_learned']}-tau{kwargs['tau']}-ut{kwargs['use_tau']}-t{kwargs['t_type']}-seqlen{input_seq_len}-dmodel{d_model}-lr{lr}-kv{num_kv_pairs}",
                             logger=LoggerConfig(
                                 project_name="lcsm",
                                 entity="doraemonzzz"
