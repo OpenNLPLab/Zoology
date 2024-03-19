@@ -13,43 +13,46 @@ VOCAB_SIZE = 8_192
 
 
 configs = []
-for input_seq_len, num_kv_pairs in [
-    (64, 4),
-    (128, 8),
-    (256, 16),
-    (512, 64),
+for d_model in [
+    32,
+    64, 
+    128, 
+    256, 
+    # 512
 ]:
-    if input_seq_len == 1024:
-        batch_size = 64
-    elif input_seq_len == 512:
-        batch_size = 64
-    elif input_seq_len == 256:
-        batch_size = 256
-    else:
-        batch_size = 512
-
-
-    factory_kwargs = {
-        "num_kv_pairs": num_kv_pairs,
-        "train_power_a": 0.01,
-        "test_power_a": 0.01,
-        "random_non_queries": False
-    }
-
-    data = DataConfig(
-        train_configs=[MQARConfig(num_examples=100_000, vocab_size=VOCAB_SIZE, input_seq_len=input_seq_len, **factory_kwargs)],
-        test_configs=[MQARConfig(num_examples=3_000, vocab_size=VOCAB_SIZE, input_seq_len=input_seq_len, **factory_kwargs)],
-        batch_size=batch_size,
-        cache_dir=cache_dir,
-    )
-
-    for d_model in [
-        64, 
-        128, 
-        256, 
-        512
+    for input_seq_len, num_kv_pairs in [
+        (32, 2),
+        (64, 4),
+        (128, 8),
+        (256, 16),
+        # (512, 64),
     ]:
-        for lr in  np.logspace(-4, -2, 4):
+        if input_seq_len == 1024:
+            batch_size = 64
+        elif input_seq_len == 512:
+            batch_size = 64
+        elif input_seq_len == 256:
+            batch_size = 256
+        else:
+            batch_size = 512
+
+
+        factory_kwargs = {
+            "num_kv_pairs": num_kv_pairs,
+            "train_power_a": 0.01,
+            "test_power_a": 0.01,
+            "random_non_queries": False
+        }
+
+        data = DataConfig(
+            train_configs=[MQARConfig(num_examples=100_000, vocab_size=VOCAB_SIZE, input_seq_len=input_seq_len, **factory_kwargs)],
+            test_configs=[MQARConfig(num_examples=3_000, vocab_size=VOCAB_SIZE, input_seq_len=input_seq_len, **factory_kwargs)],
+            batch_size=batch_size,
+            cache_dir=cache_dir,
+        )
+
+        # for lr in  np.logspace(-4, -2, 4):
+        for lr in [1e-5, 5e-5, 1e-4, 5e-4, 1e-3, 5e-3, 1e-2]:
             MIXERS = {
                 "lcsm": dict(
                     name="zoology.mixers.lcsm.Lcsm",
