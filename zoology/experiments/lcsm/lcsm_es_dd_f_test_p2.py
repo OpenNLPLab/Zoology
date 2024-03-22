@@ -71,7 +71,8 @@ for d_model in [
                 ),
             }
             
-            for f_type in range(8, 13):
+            # for f_type in range(8, 13):
+            for f_type in range(12, 13):
                 
                 for sequence_mixer in [
                     "lcsm",
