@@ -27,7 +27,10 @@ class Hgrn1(nn.Module):
         self.embed_dim = d_model
         
     def forward(self, x):
-        return self.mixer(x)
+        # x: b n d
+        y = self.mixer(x.transpose(0, 1)).transpose(0, 1)
+        
+        return y
     
     def state_size(self, batch_size: int=1, sequence_length: int=2048):
         return 2 * self.embed_dim

@@ -1,9 +1,9 @@
 from torch import nn
 
 try:
-    from mnet_pytorch import EOS
+    from lcsm_pytorch import EosLayer
 except:
-    EOS = None
+    EosLayer = None
     
 class Lcsm(nn.Module):
     def __init__(
@@ -11,32 +11,32 @@ class Lcsm(nn.Module):
         d_model=512,
         expand_dim=128,
         bias=False,
-        c_type=0,  # compute type, 1: linear layer 2: ssm
+        c_type=0,  # compute type, 0: ssm, 1: linear layer
         e_type=0,
-        f_type=0,
+        o_type=0,
+        o_learned=True,
         s_type=0,
-        f_learned=True,
+        t_type=0,  # transform(act function) type
         ssm_dim=16,
         tau=16,
-        t_type=0,  # transform type
         use_tau=True,
         **kwargs,
     ):
         super().__init__()
         
         embed_dim = d_model
-        self.mixer = EOS(
+        self.mixer = EosLayer(
             embed_dim=embed_dim,
             expand_dim=expand_dim,
             bias=bias,
             c_type=c_type,
             e_type=e_type,
-            f_type=f_type,
+            o_type=o_type,
+            o_learned=o_learned,
             s_type=s_type,
-            f_learned=f_learned,
+            t_type=t_type,
             ssm_dim=ssm_dim,
             tau=tau,
-            t_type=t_type,
             use_tau=use_tau,
         )
         self.embed_dim = embed_dim

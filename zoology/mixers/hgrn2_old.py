@@ -1,11 +1,11 @@
 from torch import nn
 
 try:
-    from hgru import SHgruV44Fast
+    from hgru import SHgruV44
 except:
-    SHgruV44Fast = None
+    SHgruV44 = None
     
-class Hgrn2(nn.Module):
+class Hgrn2Old(nn.Module):
     def __init__(
         self,
         d_model,
@@ -19,7 +19,7 @@ class Hgrn2(nn.Module):
     ):
         super().__init__()
         
-        self.mixer = SHgruV44Fast(
+        self.mixer = SHgruV44(
             embed_dim=d_model,
             expand_ratio=expand_ratio,
             act_fun=act_fun,

@@ -51,7 +51,6 @@ for d_model in [
             cache_dir=cache_dir,
         )
 
-
         # for lr in  np.logspace(-4, -2, 4):
         for lr in [1e-5, 5e-5, 1e-4, 5e-4, 1e-3, 5e-3, 1e-2]:
             MIXERS = {
@@ -62,9 +61,9 @@ for d_model in [
                         "expand_dim": 128,
                         "c_type": 1,
                         "e_type": 1,
-                        "f_type": 1,
+                        "o_type": 1,
                         "s_type": 1,
-                        "f_learned": True,
+                        "o_learned": True,
                         "tau": 16,
                         "use_tau": True,
                         "t_type": 0,
@@ -72,11 +71,14 @@ for d_model in [
                 ),
             }
             
-            for t_type in range(1, 4):
+            # for o_type in range(8, 13):
+            for o_type in range(12, 13):
+                
                 for sequence_mixer in [
                     "lcsm",
                 ]:
-                    MIXERS[sequence_mixer]["kwargs"]["t_type"] = t_type
+                    MIXERS[sequence_mixer]["kwargs"]["o_type"] = o_type
+                    
                     block_type = "TransformerBlock"
 
                     model = ModelConfig(
@@ -94,7 +96,7 @@ for d_model in [
                         data=data,
                         learning_rate=lr,
                         max_epochs=64,
-                        run_id=f"{sequence_mixer}-c{kwargs['c_type']}-e{kwargs['e_type']}-f{kwargs['f_type']}-s{kwargs['s_type']}-fl{kwargs['f_learned']}-tau{kwargs['tau']}-ut{kwargs['use_tau']}-t{kwargs['t_type']}-seqlen{input_seq_len}-dmodel{d_model}-lr{lr}-kv{num_kv_pairs}",
+                        run_id=f"{sequence_mixer}-c{kwargs['c_type']}-e{kwargs['e_type']}-f{kwargs['o_type']}-s{kwargs['s_type']}-fl{kwargs['o_learned']}-tau{kwargs['tau']}-ut{kwargs['use_tau']}-t{kwargs['t_type']}-seqlen{input_seq_len}-dmodel{d_model}-lr{lr}-kv{num_kv_pairs}",
                         logger=LoggerConfig(
                             project_name="lcsm",
                             entity="doraemonzzz"

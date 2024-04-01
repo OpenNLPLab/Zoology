@@ -14,18 +14,18 @@ VOCAB_SIZE = 8_192
 
 configs = []
 for d_model in [
-    32,
+    # 32,
     64, 
     128, 
     256, 
-    # 512
+    512
 ]:
     for input_seq_len, num_kv_pairs in [
-        (32, 2),
+        # (32, 2),
         (64, 4),
         (128, 8),
         (256, 16),
-        # (512, 64),
+        (512, 64),
     ]:
         if input_seq_len == 1024:
             batch_size = 64
@@ -35,6 +35,7 @@ for d_model in [
             batch_size = 256
         else:
             batch_size = 512
+
 
         factory_kwargs = {
             "num_kv_pairs": num_kv_pairs,
@@ -49,28 +50,21 @@ for d_model in [
             batch_size=batch_size,
             cache_dir=cache_dir,
         )
+
         # for lr in  np.logspace(-4, -2, 4):
         for lr in [1e-5, 5e-5, 1e-4, 5e-4, 1e-3, 5e-3, 1e-2]:
             MIXERS = {
-                "lcsm": dict(
-                    name="zoology.mixers.lcsm.Lcsm",
+                "hgrn2old": dict(
+                    name="zoology.mixers.hgrn2_old.Hgrn2Old",
                     kwargs={
                         "dropout": 0.1,
-                        "expand_dim": 128,
-                        "c_type": 0,
-                        "e_type": 0,
-                        "o_type": 0,
-                        "s_type": 0,
-                        "o_learned": True,
-                        "tau": 16,
-                        "use_tau": True,
-                        "t_type": 0,
+                        "expand_ratio": min(d_model, 128),
                     },
                 ),
             }
 
             for sequence_mixer in [
-                "lcsm",
+                "hgrn2old",
             ]:
                 block_type = "TransformerBlock"
 
@@ -89,9 +83,9 @@ for d_model in [
                     data=data,
                     learning_rate=lr,
                     max_epochs=64,
-                    run_id=f"{sequence_mixer}-c{kwargs['c_type']}-e{kwargs['e_type']}-f{kwargs['o_type']}-s{kwargs['s_type']}-fl{kwargs['o_learned']}-tau{kwargs['tau']}-ut{kwargs['use_tau']}-t{kwargs['t_type']}-seqlen{input_seq_len}-dmodel{d_model}-lr{lr}-kv{num_kv_pairs}",
+                    run_id=f"{sequence_mixer}-seqlen{input_seq_len}-dmodel{d_model}-lr{lr}-kv{num_kv_pairs}",
                     logger=LoggerConfig(
-                        project_name="lcsm",
+                        project_name="hgrn",
                         entity="doraemonzzz"
                     )
 
