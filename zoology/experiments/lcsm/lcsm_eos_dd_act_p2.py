@@ -59,7 +59,8 @@ for d_model in [
                     name="zoology.mixers.lcsm.Lcsm",
                     kwargs={
                         "dropout": 0.1,
-                        "expand_dim": 128,
+                        # "expand_dim": 128,
+                        "expand_dim": 64,
                         "c_type": 1,
                         "e_type": 1,
                         "o_type": 1,
