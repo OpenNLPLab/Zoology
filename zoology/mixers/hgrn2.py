@@ -1,9 +1,9 @@
 from torch import nn
 
 try:
-    from hgru import SHgruV44Fast
+    from hgru2_pytorch import Hgru2_1d
 except:
-    SHgruV44Fast = None
+    Hgru2_1d = None
     
 class Hgrn2(nn.Module):
     def __init__(
@@ -15,11 +15,12 @@ class Hgrn2(nn.Module):
         use_norm=True,
         bias=True,
         norm_type="layernorm",
+        use_fla=True,
         **kwargs,
     ):
         super().__init__()
         
-        self.mixer = SHgruV44Fast(
+        self.mixer = Hgru2_1d(
             embed_dim=d_model,
             expand_ratio=expand_ratio,
             act_fun=act_fun,
@@ -27,6 +28,7 @@ class Hgrn2(nn.Module):
             use_norm=use_norm,
             bias=bias,
             norm_type=norm_type,
+            use_fla=True,
         )
         self.embed_dim = d_model
         self.expand_ratio = expand_ratio
