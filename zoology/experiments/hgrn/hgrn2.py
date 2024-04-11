@@ -52,8 +52,8 @@ for d_model in [
         )
 
         # for lr in np.logspace(-4, -2, 4):
-        for lr in np.logspace(-4, -2, 4).tolist():
-        # for lr in [1e-5, 5e-5, 1e-4, 5e-4, 1e-3, 5e-3, 1e-2]:
+        # for lr in np.logspace(-4, -2, 4).tolist():
+        for lr in [1e-5, 5e-5, 1e-4, 5e-4, 1e-3, 5e-3, 1e-2]:
             MIXERS = {
                 "hgrn2": dict(
                     name="zoology.mixers.hgrn2.Hgrn2",
